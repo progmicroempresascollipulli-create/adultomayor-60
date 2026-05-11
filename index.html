@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 
 <meta charset="UTF-8">
@@ -11,56 +10,50 @@
 <style>
 
 body{
-    margin:0;
-    font-family:Arial;
-    background:#f2f2f2;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+  font-family: Arial;
+  background:#f4f4f4;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
 .contenedor{
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    width:350px;
-    box-shadow:0 0 15px rgba(0,0,0,0.1);
-    text-align:center;
-}
-
-h2{
-    margin-bottom:20px;
+  background:white;
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 0 15px rgba(0,0,0,0.1);
+  width:350px;
+  text-align:center;
 }
 
 input{
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:16px;
-    box-sizing:border-box;
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  border:1px solid #ccc;
+  border-radius:8px;
 }
 
 button{
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border:none;
-    border-radius:8px;
-    background:#0078ff;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#2d89ef;
+  color:white;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
 }
 
 button:hover{
-    background:#005ecc;
+  background:#1b5fbf;
 }
 
 #resultado{
-    margin-top:20px;
-    font-size:18px;
+  margin-top:20px;
+  font-size:18px;
 }
 
 </style>
@@ -71,13 +64,9 @@ button:hover{
 
 <div class="contenedor">
 
-<h2>Consulta RUT</h2>
+<h2>Consulta de RUT</h2>
 
-<input
-type="text"
-id="rut"
-placeholder="Ingrese RUT"
-/>
+<input type="text" id="rut" placeholder="Ingrese su RUT">
 
 <button onclick="buscarRut()">
 Buscar
@@ -89,54 +78,39 @@ Buscar
 
 <script>
 
-async function buscarRut() {
+async function buscarRut(){
 
-    const rut = document.getElementById("rut").value;
+  const rut = document.getElementById("rut").value;
 
-    if(rut === ""){
+  const url =
+"https://script.google.com/macros/s/AKfycbyZ-IGCldbtAr3d3ya6_crrLsAJPA99xCyY5i0utjkkEtFBmJTtBsUHLGdIQBMA9o3twQ/exec?rut=" +
+encodeURIComponent(rut);
 
-        document.getElementById("resultado").innerHTML =
-        "Ingrese un RUT";
+  const response = await fetch(url);
 
-        return;
-    }
+  const data = await response.json();
 
-    const url =
-    "https://script.google.com/macros/s/AKfycbzSdURJh-QJuLnsvEAo-cHMgE9Clfap1WkkHR6Sn8lxncsdHv0SGk30IcQeyiL0g75eOQ/exec?rut=" +
-    encodeURIComponent(rut);
+  if(data.encontrado){
 
-    try {
+    document.getElementById("resultado").innerHTML =
+      "<b>Nombre:</b> " + data.nombre +
+      "<br><b>Estado:</b> " + data.estado;
 
-        const response = await fetch(url);
+  }else{
 
-        const data = await response.json();
+    document.getElementById("resultado").innerHTML =
+      "RUT no encontrado";
 
-        if(data.encontrado){
-
-            document.getElementById("resultado").innerHTML =
-            "<b>Nombre:</b> " + data.nombre +
-            "<br><b>Estado:</b> " + data.estado;
-
-        } else {
-
-            document.getElementById("resultado").innerHTML =
-            "RUT no encontrado";
-
-        }
-
-    } catch(error){
-
-        document.getElementById("resultado").innerHTML =
-        "Error de conexión";
-
-        console.log(error);
-
-    }
-
+  }
 }
 
 </script>
 
 </body>
-
 </html>
+
+
+
+
+
+

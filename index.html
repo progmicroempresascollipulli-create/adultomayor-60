@@ -80,11 +80,11 @@ Buscar
 
 async function buscarRut(){
 
-  const rut = document.getElementById("rut").value;
+  const rut = document.getElementById("RUT").value;
 
   const url =
 "https://script.google.com/macros/s/AKfycbyZ-IGCldbtAr3d3ya6_crrLsAJPA99xCyY5i0utjkkEtFBmJTtBsUHLGdIQBMA9o3twQ/exec?rut=" +
-encodeURIComponent(rut);
+encodeURIComponent(RUT);
 
   const response = await fetch(url);
 

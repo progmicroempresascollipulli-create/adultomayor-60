@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Consulta RUT</title>
+
+<style>
+
+body{
+  font-family: Arial;
+  background:#f4f4f4;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.contenedor{
+  background:white;
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 0 15px rgba(0,0,0,0.1);
+  width:350px;
+  text-align:center;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  border:1px solid #ccc;
+  border-radius:8px;
+}
+
+button{
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#2d89ef;
+  color:white;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
+}
+
+button:hover{
+  background:#1b5fbf;
+}
+
+#resultado{
+  margin-top:20px;
+  font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+<h2>Consulta de RUT</h2>
+
+<input type="text" id="rut" placeholder="Ingrese su RUT">
+
+<button onclick="buscarRut()">
+Buscar
+</button>
+
+<div id="resultado"></div>
+
+</div>
+
+<script>
+
+async function buscarRut(){
+
+  const rut = document.getElementById("rut").value;
+
+  const url = "https://script.google.com/macros/s/AKfycbzkbHe6jv5si7WkVCwxK-RBX4zhXTg64q9Eviw-NiQJq3yIxchXt5lZ8w1vHIqRZ20WeA/exec" + rut;
+
+  const response = await fetch(url);
+
+  const data = await response.json();
+
+  if(data.encontrado){
+
+    document.getElementById("resultado").innerHTML =
+      "<b>Nombre:</b> " + data.nombre +
+      "<br><b>Estado:</b> " + data.estado;
+
+  }else{
+
+    document.getElementById("resultado").innerHTML =
+      "RUT no encontrado";
+
+  }
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,135 +1,135 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Consulta RUT</title>
-
-<style>
-
-body{
-    font-family:Arial;
-    background:#f2f2f2;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    margin:0;
-}
-
-.caja{
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    width:350px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-    text-align:center;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    box-sizing:border-box;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border:none;
-    border-radius:8px;
-    background:#0078ff;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-}
-
-#resultado{
-    margin-top:20px;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta RUT Municipal</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .caja { 
+            background: white; 
+            padding: 35px; 
+            border-radius: 20px; 
+            width: 350px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+            text-align: center; 
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            border: 1px solid #ccc; 
+            box-sizing: border-box; 
+            font-size: 16px;
+        }
+        /* BOTÓN NARANJO */
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 8px; 
+            background: #ff8c00; /* Naranjo */
+            color: white; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background 0.3s ease; 
+        }
+        button:hover { 
+            background: #e67e00; /* Naranjo más oscuro al pasar el mouse */
+        }
+        button:disabled { 
+            background: #ccc; 
+            cursor: not-allowed;
+        }
+        #resultado { 
+            margin-top: 20px; 
+            font-size: 16px; 
+            min-height: 50px;
+        }
+        .error { color: #d93025; font-weight: bold; }
+        .exito { 
+            color: #1e7e34; 
+            background: #eafaf1; 
+            padding: 15px; 
+            border-radius: 10px; 
+            text-align: left;
+            border: 1px solid #d4edda;
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="caja">
-
-<h2>Consulta RUT</h2>
-
-<input
-id="rut"
-type="text"
-placeholder="Ingrese su RUT"
-/>
-
-<button onclick="buscarRut()">
-Buscar
-</button>
-
-<div id="resultado"></div>
-
+    <h2>Consulta RUT</h2>
+    <input id="rut" type="text" placeholder="Ej: 12345678-9" />
+    <button id="btnBuscar" onclick="buscar()">Buscar</button>
+    <div id="resultado"></div>
 </div>
 
 <script>
+async function buscar() {
+    const input = document.getElementById("rut");
+    const resDiv = document.getElementById("resultado");
+    const btn = document.getElementById("btnBuscar");
 
-async function buscarRut(){
+    // Limpiamos el RUT: quitamos puntos, guiones y espacios antes de enviar
+    const rutLimpio = input.value.replace(/[^0-9kK]/g, "");
 
-    const inputRut = document.getElementById("rut");
-
-    const rut = inputRut.value;
-
-    if(rut === ""){
-
-        document.getElementById("resultado").innerHTML =
-        "Ingrese un RUT";
-
+    if (!rutLimpio) {
+        resDiv.innerHTML = "<span class='error'>Ingresa un RUT válido</span>";
         return;
     }
 
-    const url =
-    "https://script.google.com/macros/s/AKfycbyZ-IGCldbtAr3d3ya6_crrLsAJPA99xCyY5i0utjkkEtFBmJTtBsUHLGdIQBMA9o3twQ/exec?rut=" +
-    encodeURIComponent(rut);
+    // Bloqueamos el botón y mostramos carga
+    resDiv.innerHTML = "Buscando...";
+    btn.disabled = true;
 
-    try{
+    // Tu URL de Google Apps Script
+    const url = `https://script.google.com/macros/s/AKfycbxoROsGxl1YPYDurMQBxGILRELq3gwskL3k9YdhQ0OG4_nuQCogzOwAPE0ur3IUQtYx0A/exec?rut=${rutLimpio}`;
 
+    try {
         const response = await fetch(url);
+        
+        if (!response.ok) throw new Error("Error en servidor");
 
         const data = await response.json();
 
-        if(data.encontrado){
-
-            document.getElementById("resultado").innerHTML =
-            "<b>Nombre:</b> " + data.nombre +
-            "<br><b>Estado:</b> " + data.estado;
-
-        }else{
-
-            document.getElementById("resultado").innerHTML =
-            "RUT no encontrado";
-
+        if (data.encontrado) {
+            resDiv.innerHTML = `
+                <div class="exito">
+                    <strong>Nombre:</strong> ${data.nombre}<br>
+                    <strong>Estado:</strong> ${data.estado}
+                </div>`;
+        } else {
+            resDiv.innerHTML = "<span class='error'>RUT no encontrado</span>";
         }
-
-    }catch(error){
-
-        document.getElementById("resultado").innerHTML =
-        "Error de conexión";
-
-        console.log(error);
-
+    } catch (e) {
+        console.error(e);
+        resDiv.innerHTML = "<span class='error'>Error al conectar con el servidor</span>";
+    } finally {
+        // Rehabilitamos el botón
+        btn.disabled = false;
     }
-
 }
 
+// Permitir buscar al presionar la tecla Enter
+document.getElementById("rut").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        buscar();
+    }
+});
 </script>
 
 </body>
-
 </html>
